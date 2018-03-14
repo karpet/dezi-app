@@ -35,7 +35,6 @@ lib/Dezi/Utils.pm
 lib/Dezi/CLI.pm
 lib/Dezi/Lucy.pm
 lib/Dezi/Lucy/Indexer.pm
-lib/Dezi/Lucy/Indexer.pm.new
 lib/Dezi/Lucy/InvIndex.pm
 lib/Dezi/Lucy/Result.pm
 lib/Dezi/Lucy/Results.pm

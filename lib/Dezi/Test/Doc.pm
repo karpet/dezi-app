@@ -40,9 +40,15 @@ All attributes defined in L<SWISH::3> SWISH_DOC_PROP_MAP hash.
 
 =head2 swishdefault
 
+A Metaname that is used by Swish-e if no other name is specified.
+
 =head2 swishtitle
 
+Document title.
+
 =head2 swishdescription
+
+Description of document.
 
 =head2 uri
 

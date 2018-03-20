@@ -32,6 +32,15 @@ Dezi::Test::Doc - test Document class for Dezi::Test::Result
 
 =head1 SYNOPSIS
 
+    use Dezi::Test::Doc;
+
+    my %doc;  # holds all the parsed text, keyed by field name
+    ... construct %doc hash ...
+    my $test_doc = Dezi::Test::Doc->new( %doc );
+
+    print $test_doc->swishtitle, "\n";
+    print $test_doc->swishdescription, "\n";
+
 =head1 METHODS
 
 =head2 SWISH_DOC_PROP_MAP

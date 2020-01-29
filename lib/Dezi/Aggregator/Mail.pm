@@ -8,7 +8,7 @@ use Data::Dump qw( dump );
 use Search::Tools::XML;
 use Mail::Box::Manager;
 
-our $VERSION = '0.016';
+our $VERSION = '0.017';
 
 my $XMLer = Search::Tools::XML->new();
 
@@ -134,8 +134,24 @@ sub _process_folder {
 
         warn "searching $sub\n" if $self->verbose;
 
+        if ( $self->_apply_file_rules($sub)
+            && !$self->_apply_file_match($sub) )
+        {
+            warn "skipping FileRules match $sub\n" if $self->verbose;
+            next;
+        }
+
         foreach my $message ( $subf->messages ) {
             my $doc = $self->get_doc( $sub, $message );
+
+            if ( $self->_apply_file_rules( $doc->url )
+                && !$self->_apply_file_match( $doc->url ) )
+            {
+                warn sprintf( "skipping FileRules match %s\n", $doc->url )
+                    if $self->verbose;
+                next;
+            }
+
             $indexer->process($doc);
             $self->_increment_count;
         }
@@ -195,8 +211,8 @@ sub get_doc {
 
     # >head->createFromLine;
     my %meta = (
-        url => join( '.', $folder, $message->messageId ),
-        id  => $message->messageId,
+        url     => join( '.', $folder, $message->messageId ),
+        id      => $message->messageId,
         subject => $message->subject || '[ no subject ]',
         date    => $message->timestamp,
         size    => $message->size,

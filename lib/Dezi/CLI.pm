@@ -12,7 +12,7 @@ use Try::Tiny;
 use Dezi::App;
 use Dezi::InvIndex;
 
-our $VERSION = '0.016';
+our $VERSION = '0.017';
 
 our $CLI_NAME = 'deziapp';
 
@@ -437,13 +437,12 @@ sub index {
         or confess "Must define inputs in order to index";
     my $app      = $self->_get_app;
     my $start    = time();
-    my $num_docs = $app->run(@$inputs);
+    my $num_docs = $app->run(@$inputs) || 0;
     my $end      = time();
     my $elapsed  = $end - $start;
     printf(
         "%d document%s in %s\n",
-        ( $num_docs || 0 ),
-        ( $num_docs == 1 ? '' : 's' ),
+        $num_docs, ( $num_docs == 1 ? '' : 's' ),
         _secs2hms($elapsed)
     );
     return $num_docs;
@@ -496,6 +495,7 @@ sub _commands {
         Valid options are:
          "fs" - local files in your File System
          "spider" - web site files using a web crawler
+         "mailfs" - local Mail::Box filesystem -- see Dezi::Aggregator::MailFS
         The default value is: "fs"
     -v : indexing verbosity level (0 to 3) [-v 1]
     -W : next param is ParserWarnLevel [-W 2]

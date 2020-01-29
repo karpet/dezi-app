@@ -1,5 +1,9 @@
 Revision history for Dezi-App
 
+0.017  xxx
+  - Fix perldoc for CLI
+  - add FileRules and FileMatch support to Aggregator::Mail
+
 0.016  27 April 2018
   - Change shebang line of deziapp tool to /usr/bin/perl so that CPAN will localize on install.
 

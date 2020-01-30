@@ -173,7 +173,7 @@ sub _filter_attachment {
     my $filename = $attm->body->dispositionFilename;
     my $content  = $attm->decoded . '';                # force stringify
 
-    return "" unless $filename;
+    return $content unless $filename;
 
     my @filters;
 

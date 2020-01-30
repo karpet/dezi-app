@@ -6,6 +6,7 @@ with 'Dezi::Role';
 use Carp;
 use Data::Dump qw( dump );
 use Search::Tools::XML;
+use Search::Tools::UTF8;
 use Mail::Box::Manager;
 
 our $VERSION = '0.017';
@@ -174,6 +175,8 @@ sub _filter_attachment {
 
     return "" unless $filename;
 
+    my @filters;
+
     if ( $self->swish_filter_obj->can_filter($type) ) {
 
         my $f = $self->swish_filter_obj->convert(
@@ -190,13 +193,16 @@ sub _filter_attachment {
             return '';
         }
 
-        $content = ${ $f->fetch_doc };
+        $content = to_utf8( ${ $f->fetch_doc } );
+        $content = '[unconverted]' if $content =~ m/[^\x00-\x7F]/; # consider low ascii problematic
+        @filters = map { ref $_->{name} } @{ $f->filters_used };
     }
     else {
         $content = '[unconverted]';
     }
 
     return join( '',
+        "<filter>", join( ",", @filters ), "</filter>",
         "<type>$type</type>", '<title>', $XMLer->escape($filename),
         '</title>', $XMLer->escape($content) );
 

@@ -91,7 +91,7 @@ sub BUILD {
 # recurse through maildir, get all messages,
 # convert each message to xml, create Doc object and call index()
 
-=head2 crawl( I<path_to_maildir> )
+=head2 crawl( I<path_to_maildir>[, I<path_to_another_maildir>] )
 
 Create index.
 
@@ -100,6 +100,15 @@ Returns number of emails indexed.
 =cut
 
 sub crawl {
+    my $self  = shift;
+    my $count = 0;
+    for my $dir (@_) {
+        $count += $self->_crawl_maildir($dir);
+    }
+    return $count;
+}
+
+sub _crawl_maildir {
     my $self    = shift;
     my $maildir = shift or croak "maildir required";
     my $manager = Mail::Box::Manager->new;
@@ -139,11 +148,12 @@ sub _process_folder {
             && !$self->_apply_file_match($sub) )
         {
             warn "skipping FileRules match $sub\n" if $self->verbose;
+            $subf->close( write => 'NEVER' );
             next;
         }
 
         foreach my $message ( $subf->messages ) {
-            my $doc = $self->get_doc( $sub, $message );
+            my $doc = $self->get_doc($message);
 
             if ( $self->_apply_file_rules( $doc->url )
                 && !$self->_apply_file_match( $doc->url ) )
@@ -224,13 +234,12 @@ doc_class() object.
 =cut
 
 sub get_doc {
-    my $self    = shift;
-    my $folder  = shift or croak "folder required";
+    my $self = shift;
     my $message = shift or croak "mail meta required";
 
     # >head->createFromLine;
     my %meta = (
-        url     => join( '.', $folder, $message->messageId ),
+        url     => join( '.', $message->folder, $message->messageId ),
         id      => $message->messageId,
         subject => $message->subject || '[ no subject ]',
         date    => $message->timestamp,

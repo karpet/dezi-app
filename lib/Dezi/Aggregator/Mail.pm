@@ -173,7 +173,7 @@ sub _filter_attachment {
     my $filename = $attm->body->dispositionFilename;
     my $content  = $attm->decoded . '';                # force stringify
 
-    return $content unless $filename;
+    return $XMLer->escape_utf8($content) unless $filename;
 
     my @filters;
 

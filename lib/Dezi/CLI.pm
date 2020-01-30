@@ -493,9 +493,10 @@ sub _commands {
          if no argument, defaults to [indexdir/swish_last_start]
     -S : specify which aggregator to use.
         Valid options are:
-         "fs" - local files in your File System
+         "fs" - local files in your filesystem
          "spider" - web site files using a web crawler
-         "mailfs" - local Mail::Box filesystem -- see Dezi::Aggregator::MailFS
+         "mail" - local Mail::Box filesystem -- see Dezi::Aggregator::Mail
+         "mailfs" - local mail filesystem -- see Dezi::Aggregator::MailFS
         The default value is: "fs"
     -v : indexing verbosity level (0 to 3) [-v 1]
     -W : next param is ParserWarnLevel [-W 2]

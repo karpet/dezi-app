@@ -190,7 +190,9 @@ sub _filter_attachment {
             || $f->is_binary )    # is is_binary necessary?
         {
             warn "skipping $filename in message $msg_url - filtering error\n";
-            return '';
+            return join( "",
+                "<type>$type</type>",      '<title>',
+                $XMLer->escape($filename), '</title>' );
         }
 
         $content = to_utf8( ${ $f->fetch_doc } );

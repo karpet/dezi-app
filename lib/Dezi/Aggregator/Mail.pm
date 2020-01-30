@@ -172,6 +172,8 @@ sub _filter_attachment {
     my $filename = $attm->body->dispositionFilename;
     my $content  = $attm->decoded . '';                # force stringify
 
+    return "" unless $filename;
+
     if ( $self->swish_filter_obj->can_filter($type) ) {
 
         my $f = $self->swish_filter_obj->convert(
@@ -190,9 +192,12 @@ sub _filter_attachment {
 
         $content = ${ $f->fetch_doc };
     }
+    else {
+        $content = '[unconverted]';
+    }
 
     return join( '',
-        '<title>',  $XMLer->escape($filename),
+        "<type>$type</type>", '<title>', $XMLer->escape($filename),
         '</title>', $XMLer->escape($content) );
 
 }
@@ -226,10 +231,8 @@ sub get_doc {
     my @parts = $message->parts;
 
     for my $part (@parts) {
-        push(
-            @{ $meta{parts} },
-            $self->_filter_attachment( $meta{url}, $part )
-        );
+        my $filtered_part = $self->_filter_attachment( $meta{url}, $part );
+        push( @{ $meta{parts} }, $filtered_part ) if $filtered_part;
     }
 
     my $title = $meta{subject};

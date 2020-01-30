@@ -16,6 +16,13 @@ our $VERSION = '0.017';
 
 our $CLI_NAME = 'deziapp';
 
+# optional arg types
+use Moose::Util::TypeConstraints;
+subtype 'MaybeInt' => as 'Int' => where { $_ > 0 };
+MooseX::Getopt::OptionTypeMap->add_option_type_to_map( 'MaybeInt' => ':i' );
+subtype 'MaybeStr' => as 'Str' => where { $_ =~ /./ };
+MooseX::Getopt::OptionTypeMap->add_option_type_to_map( 'MaybeStr' => ':s' );
+
 has 'aggregator' => (
     is          => 'rw',
     isa         => Str,
@@ -55,7 +62,7 @@ has 'debug' => (
 sub _init_debug { $ENV{DEZI_DEBUG} || 0 }
 has 'expected' => (
     is          => 'rw',
-    isa         => Maybe [Int],
+    isa         => 'MaybeInt',
     traits      => ['Getopt'],
     cmd_aliases => ['E'],
 );
@@ -130,7 +137,7 @@ has 'max' => (
 );
 has 'newer_than' => (
     is          => 'rw',
-    isa         => Maybe [Str],
+    isa         => 'MaybeStr',
     traits      => ['Getopt'],
     cmd_aliases => ['N'],
 );
@@ -155,7 +162,7 @@ has 'sort_order' => (
 );
 has 'verbose' => (
     is          => 'rw',
-    isa         => Maybe [Int],
+    isa         => 'MaybeInt',
     traits      => ['Getopt'],
     cmd_aliases => ['v'],
 );
@@ -435,8 +442,11 @@ sub index {
     my $self   = shift;
     my $inputs = $self->inputs
         or confess "Must define inputs in order to index";
-    my $app      = $self->_get_app;
-    my $start    = time();
+    my $app   = $self->_get_app;
+    my $start = time();
+
+    #printf( "inputs: %s\n", dump($inputs) );
+
     my $num_docs = $app->run(@$inputs) || 0;
     my $end      = time();
     my $elapsed  = $end - $start;

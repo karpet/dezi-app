@@ -194,7 +194,12 @@ sub _filter_attachment {
         }
 
         $content = to_utf8( ${ $f->fetch_doc } );
-        $content = '[unconverted]' if $content =~ m/[^\x00-\x7F]/; # consider low ascii problematic
+
+        # consider low ascii problematic
+        $content = '[unconverted]'
+            if $content =~ m/[^\x00-\x7F]/
+            or !is_valid_utf8($content);
+
         @filters = map { ref $_->{name} } @{ $f->filters_used };
     }
     else {
@@ -202,9 +207,10 @@ sub _filter_attachment {
     }
 
     return join( '',
-        "<filter>", join( ",", @filters ), "</filter>",
-        "<type>$type</type>", '<title>', $XMLer->escape($filename),
-        '</title>', $XMLer->escape($content) );
+        "<filter>",  join( ",", @filters ),
+        "</filter>", "<type>$type</type>",
+        '<title>',   $XMLer->escape($filename),
+        '</title>',  $XMLer->escape_utf8( $XMLer->strip_markup($content) ) );
 
 }
 

@@ -1,0 +1,10 @@
+install:
+	dzil install --install-command 'cpanm -S -n -f .'
+
+test:
+	prove -Ilib t/
+
+deps:
+	dzil authordeps --missing | cpanm
+
+.PHONY: install test

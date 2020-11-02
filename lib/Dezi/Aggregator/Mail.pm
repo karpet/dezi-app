@@ -236,10 +236,11 @@ doc_class() object.
 sub get_doc {
     my $self = shift;
     my $message = shift or croak "mail meta required";
+    my $folder = shift || $message->folder;
 
     # >head->createFromLine;
     my %meta = (
-        url     => join( '.', $message->folder, $message->messageId ),
+        url     => join( '.', $folder, $message->messageId ),
         id      => $message->messageId,
         subject => $message->subject || '[ no subject ]',
         date    => $message->timestamp,

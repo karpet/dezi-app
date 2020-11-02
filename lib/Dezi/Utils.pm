@@ -201,6 +201,12 @@ sub path_parts {
 
     # TODO build regex from ->config
     my ( $file, $path, $ext ) = fileparse( $url, $re );
+    if ( !$file and $ext ) {
+
+        # this is a dot-file (no extension, leading dot)
+        $file = $ext;
+        $ext  = '';
+    }
     return ( $path, $file, $ext );
 }
 

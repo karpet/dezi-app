@@ -1,12 +1,6 @@
 =head1 Dezi-App
 
-=begin html
-
-<p>
-  <img src="https://travis-ci.org/karpet/dezi-app.png?branch=master" alt="Travis CI build status">
-</p>
-
-=end html
+=for html <a href="https://travis-ci.org/karpet/dezi-app"><img src="https://travis-ci.org/karpet/dezi-app.svg?branch=master"></a>
 
 Dezi::App is a Moose port of SWISH::Prog.
 

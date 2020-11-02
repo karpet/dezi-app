@@ -13,17 +13,15 @@ Dezi::App is a Moose port of SWISH::Prog.
 Dezi::App drops compatibility with Swish-e version 2.x and focuses
 on tight integration with SWISH::3 and Apache Lucy.
 
-=head1 DEVELOPMENT
+=head2 DEVELOPMENT
 
 This module uses Dist::Zilla. After `git clone` try:
 
-```
-% cpan Dist::Zilla Dist::Zilla::Role::ModuleMetadata
-% cpan App::cpanminus
-% dzil authordeps --missing | cpanm
-% dzil build
-% dzil test
-```
+  % cpan Dist::Zilla Dist::Zilla::Role::ModuleMetadata
+  % cpan App::cpanminus
+  % dzil authordeps --missing | cpanm
+  % dzil build
+  % dzil test
 
 =head2 INSTALLATION
 

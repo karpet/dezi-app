@@ -1,12 +1,9 @@
 language: perl
 perl:
-    - "5.30"
-    - "5.28"
-    - "5.26"
-    - "5.24"
-    - "5.22"
-    - "5.20"
-    - "5.18"
+  - "dev"
+  - "5.30"
+  - "5.28"
+  - "5.26"
 
 env:
     - TEST_SPIDER=1
@@ -18,8 +15,11 @@ install:
 script:
     - RELEASE_TESTING=1 dzil test --author --release
 
+before_install:
+  - eval $(curl https://travis-perl.github.io/init) --auto
+
 dist: xenial
 os: linux
 cache:
   directories:
-    - $HOME/perl5/perlbrew/perls
+    - $HOME/perl5

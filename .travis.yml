@@ -21,3 +21,6 @@ script:
 
 dist: xenial
 os: linux
+cache:
+  directories:
+    - $HOME/perl5/perlbrew/perls

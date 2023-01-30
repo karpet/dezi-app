@@ -29,7 +29,7 @@ jobs:
           fi
       - name: Install dependencies
         run: |
-          cpan Dist::Zilla Dist::Zilla::Role::ModuleMetadata
+          cpan CPAN::DistnameInfo Dist::Zilla Dist::Zilla::Role::ModuleMetadata
           dzil authordeps --missing | cpanm
       - name: build
         run: dzil build

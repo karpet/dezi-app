@@ -106,7 +106,8 @@ sub _build_lucy_delegates {
     my $schema      = Lucy::Plan::Schema->new();
     my $analyzers   = {};
     my $case_folder = Lucy::Analysis::CaseFolder->new;
-    my $tokenizer   = Lucy::Analysis::RegexTokenizer->new;
+    my $tokenizer   = Lucy::Analysis::RegexTokenizer->new(
+        pattern => $self->swish3->get_analyzer->get_regex );
     my $multival_tokenizer
         = Lucy::Analysis::RegexTokenizer->new(
         pattern => '[^' . SWISH_TOKENPOS_BUMPER() . ']+' );

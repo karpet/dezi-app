@@ -27,10 +27,10 @@ jobs:
           elif [ "$RUNNER_OS" == "macOS" ]; then
             brew install automake
           fi
-      - name: Install dependencies
-        run: |
-          cpan CPAN::DistnameInfo Dist::Zilla Dist::Zilla::Role::ModuleMetadata
-          dzil authordeps --missing | cpanm
+      - name: Install build dependencies
+        run: cpan CPAN::DistnameInfo Dist::Zilla Dist::Zilla::Role::ModuleMetadata
+      - name: Install test dependencies
+        run: dzil authordeps --missing | cpanm
       - name: build
         run: dzil build
       - name: test

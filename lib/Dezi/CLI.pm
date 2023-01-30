@@ -520,6 +520,7 @@ sub _commands {
     -L : Limit results to a range of property values
     -m : the maximum number of results to return [defaults to all results]
     -n : query parser special NULL term
+    -q : alias for -w
     -R : next param is Rank Scheme number (0 to 1)  [0].
     -s : sort by these document properties in the output "prop1 prop2 ..."
     -V : prints the current version

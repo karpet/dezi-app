@@ -20,6 +20,13 @@ jobs:
         with:
           perl-version: ${{ matrix.perl }}
       - run: perl -V
+      - name: OS dependencies
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get update && sudo apt-get install -y locales && locale -a && sudo locale-gen en_US.UTF-8
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            brew install automake
+          fi
       - name: Install dependencies
         run: |
           cpan Dist::Zilla Dist::Zilla::Role::ModuleMetadata

@@ -22,7 +22,7 @@ jobs:
       - run: perl -V
       - name: Install dependencies
         run: |
-          cpan Dist::Zilla Dist::Zilla::Role::ModuleMetadata App::cpanminus
+          cpan Dist::Zilla Dist::Zilla::Role::ModuleMetadata
           dzil authordeps --missing | cpanm
       - name: build
         run: dzil build

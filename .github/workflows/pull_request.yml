@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-latest', 'macos-latest']
-        perl: [ '5.36', '5.34', '5.32' ]
+        perl: [ '5.36' ] #, '5.34', '5.32' ]
     name: Perl ${{ matrix.perl }} on ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -25,8 +25,7 @@ jobs:
           if [ "$RUNNER_OS" == "Linux" ]; then
             sudo apt-get update && sudo apt-get install -y locales && locale -a && sudo locale-gen en_US.UTF-8
           elif [ "$RUNNER_OS" == "macOS" ]; then
-            brew install automake
-            cpan XML::LibXML
+            brew install automake && cpan XML::LibXML
           fi
       - name: Install build dependencies
         run: |

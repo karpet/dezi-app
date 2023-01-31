@@ -31,9 +31,9 @@ jobs:
       - name: Install build dependencies
         run: |
           cpan CPAN::DistnameInfo Dist::Zilla Dist::Zilla::Role::ModuleMetadata
-          dzil authordeps --missing | cpanm
+          dzil authordeps --missing | cpanm --notest
       - name: Install module dependencies
-        run: dzil listdeps --missing | cpanm
+        run: dzil listdeps --missing | cpanm --notest
       - name: build
         run: dzil build
       - name: test

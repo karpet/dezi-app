@@ -26,20 +26,14 @@ jobs:
             sudo apt-get update && sudo apt-get install -y locales && locale -a && sudo locale-gen en_US.UTF-8
           elif [ "$RUNNER_OS" == "macOS" ]; then
             brew install automake
+            brew install libxml2
+            echo PATH=$(brew info libxml2 | grep 'export PATH' | perl -n -e 's,.+export PATH="(.+?):".+,$1,; print'):$PATH >> $GITHUB_ENV
           fi
-      - name: Check libxml2
-        if: runner.os == 'macOS'
-        run: |
-          brew info libxml2
-          which xml2-config
-          xml2-config --version
-          xml2-config --cflags
-          brew install libxml2
-          echo PATH=$(brew info libxml2 | grep 'export PATH' | perl -n -e 's,.+export PATH="(.+?):".+,$1,; print'):$PATH >> $GITHUB_ENV
-          cpan -f Alien::Libxml2
       - name: Install build dependencies
         run: |
           cpan CPAN::DistnameInfo Dist::Zilla Dist::Zilla::Role::ModuleMetadata
+          # -f just in case, we want to force using the brew-installed libxml2
+          cpan -f Alien::Libxml2
           dzil authordeps --missing | cpanm --notest
       - name: Install module dependencies
         run: dzil listdeps --missing | cpanm --notest

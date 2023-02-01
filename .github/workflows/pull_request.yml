@@ -28,7 +28,7 @@ jobs:
             brew install automake
           fi
       - name: Check libxml2
-        if: runner.os == "macOS"
+        if: runner.os == 'macOS'
         run: |
           brew info libxml2
           which xml2-config

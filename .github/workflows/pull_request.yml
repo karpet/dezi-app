@@ -1,0 +1,43 @@
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+name: Build and Test
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ['ubuntu-latest', 'macos-latest']
+        perl: [ '5.36' ] #, '5.34', '5.32' ]
+    name: Perl ${{ matrix.perl }} on ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up perl
+        uses: shogo82148/actions-setup-perl@v1
+        with:
+          perl-version: ${{ matrix.perl }}
+      - run: perl -V
+      - name: OS dependencies
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get update && sudo apt-get install -y locales && locale -a && sudo locale-gen en_US.UTF-8
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            brew install automake
+            brew install libxml2
+            echo PATH=$(brew info libxml2 | grep 'export PATH' | perl -n -e 's,.+export PATH="(.+?):".+,$1,; print'):$PATH >> $GITHUB_ENV
+          fi
+      - name: Install build dependencies
+        run: |
+          cpan CPAN::DistnameInfo Dist::Zilla Dist::Zilla::Role::ModuleMetadata
+          # -f just in case, we want to force using the brew-installed libxml2
+          cpan -f Alien::Libxml2
+          dzil authordeps --missing | cpanm --notest
+      - name: Install module dependencies
+        run: dzil listdeps --missing | cpanm --notest
+      - name: build
+        run: dzil build
+      - name: test
+        run: RELEASE_TESTING=1 TEST_SPIDER=1 dzil test --author --release

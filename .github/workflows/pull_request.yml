@@ -35,7 +35,7 @@ jobs:
           xml2-config --version
           xml2-config --cflags
           brew install libxml2
-          echo PATH=$(brew info libxml2 | grep 'export PATH' | perl -n -e 's,.+export PATH="(.+?)".+,$1,; print') >> $GITHUB_ENV
+          echo PATH=$(brew info libxml2 | grep 'export PATH' | perl -n -e 's,.+export PATH="(.+?):".+,$1,; print'):$PATH >> $GITHUB_ENV
           cpan -f Alien::Libxml2
       - name: Install build dependencies
         run: |

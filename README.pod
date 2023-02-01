@@ -1,6 +1,6 @@
 =head1 Dezi-App
 
-![Dezi-App](https://github.com/karpet/dezi-app/actions/workflows/pull_request/badge.svg)
+[Dezi-App](https://github.com/karpet/dezi-app/actions/workflows/pull_request/badge.svg)
 
 Dezi::App is a Moose port of SWISH::Prog.
 

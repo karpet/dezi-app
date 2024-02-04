@@ -111,7 +111,7 @@ sub crawl {
 sub _crawl_maildir {
     my $self    = shift;
     my $maildir = shift or croak "maildir required";
-    my $manager = Mail::Box::Manager->new;
+    my $manager = Mail::Box::Manager->new( log => $self->verbose );
 
     $self->{count} = 0;
 
@@ -136,8 +136,15 @@ sub _process_folder {
     my $self = shift;
     my $folder = shift or croak "folder required";
 
-    my @subs    = sort $folder->listSubFolders;
-    my $indexer = $self->indexer;
+    my @subs     = sort $folder->listSubFolders;
+    my @messages = $folder->messages;
+    my $indexer  = $self->indexer;
+
+    warn sprintf(
+        "folder=%s %s subs=%s messages=%s\n",
+        ref($folder), $folder, dump( \@subs ),
+        scalar(@messages)
+    ) if $self->debug;
 
     for my $sub (@subs) {
         my $subf = $folder->openSubFolder($sub);
@@ -152,24 +159,32 @@ sub _process_folder {
             next;
         }
 
-        foreach my $message ( $subf->messages ) {
-            my $doc = $self->get_doc($message);
+        my @sub_messages = $subf->messages;
 
-            if ( $self->_apply_file_rules( $doc->url )
-                && !$self->_apply_file_match( $doc->url ) )
-            {
-                warn sprintf( "skipping FileRules match %s\n", $doc->url )
-                    if $self->verbose;
-                next;
-            }
+        warn sprintf(
+            "found %s messages in $subf %s\n",
+            scalar @sub_messages,
+            ref($subf)
+        ) if $self->verbose;
 
-            $indexer->process($doc);
-            $self->_increment_count;
+        push( @messages, @sub_messages );
+        $self->_process_folder($subf);
+        $subf->close( write => 'NEVER' );
+    }
+
+    foreach my $message (@messages) {
+        my $doc = $self->get_doc($message);
+
+        if ( $self->_apply_file_rules( $doc->url )
+            && !$self->_apply_file_match( $doc->url ) )
+        {
+            warn sprintf( "skipping FileRules match %s\n", $doc->url )
+                if $self->verbose;
+            next;
         }
 
-        $self->_process_folder($subf);
-
-        $subf->close( write => 'NEVER' );
+        $indexer->process($doc);
+        $self->_increment_count;
     }
 
 }
@@ -234,9 +249,9 @@ doc_class() object.
 =cut
 
 sub get_doc {
-    my $self = shift;
+    my $self    = shift;
     my $message = shift or croak "mail meta required";
-    my $folder = shift || $message->folder;
+    my $folder  = shift || $message->folder;
 
     # >head->createFromLine;
     my %meta = (

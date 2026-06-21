@@ -268,7 +268,7 @@ sub get_doc {
         if (    $skip_text_plain
             and $part->body->mimeType->type eq 'text/plain' )
         {
-            # next;
+            next;
         }
         my $filtered_part = $self->_filter_attachment( $meta{url}, $part );
         push( @{ $meta{parts} }, $filtered_part ) if $filtered_part;

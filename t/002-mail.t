@@ -79,8 +79,9 @@ SKIP: {
         swish3_config => $indexer->swish3->get_config
     );
     my $res     = $searcher->search('Passage');
-    my $matches = () = $res->payload->docs->[0]->swishdefault =~ /Passage/;
-    ok( $matches == 1, 'text/plain skipped in mail message multipart' );
+    my $matches = () = $res->payload->docs->[0]->swishdefault =~ /Passage/g;
+    # dump $res;
+    is( $matches, 1, 'text/plain skipped in mail message multipart' );
 
     # clean up
     $maildir->rmtree();

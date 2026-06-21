@@ -133,7 +133,7 @@ sub _addresses {
 }
 
 sub _process_folder {
-    my $self = shift;
+    my $self   = shift;
     my $folder = shift or croak "folder required";
 
     my @subs    = sort $folder->listSubFolders;
@@ -234,9 +234,9 @@ doc_class() object.
 =cut
 
 sub get_doc {
-    my $self = shift;
+    my $self    = shift;
     my $message = shift or croak "mail meta required";
-    my $folder = shift || $message->folder;
+    my $folder  = shift || $message->folder;
 
     # >head->createFromLine;
     my %meta = (
@@ -254,7 +254,23 @@ sub get_doc {
 
     my @parts = $message->parts;
 
+    # if we have only 2 parts, and they are text/plain and text/html
+    # then skip text/plain
+    my @part_types      = map { $_->body->mimeType->type } @parts;
+    my $skip_text_plain = 0;
+    if (    scalar @part_types == 2
+        and grep { $_ eq 'text/html' } @part_types
+        and grep { $_ eq 'text/html' } @part_types )
+    {
+        $skip_text_plain = 1;
+    }
+
     for my $part (@parts) {
+        if (    $skip_text_plain
+            and $part->body->mimeType->type eq 'text/plain' )
+        {
+            # next;
+        }
         my $filtered_part = $self->_filter_attachment( $meta{url}, $part );
         push( @{ $meta{parts} }, $filtered_part ) if $filtered_part;
     }

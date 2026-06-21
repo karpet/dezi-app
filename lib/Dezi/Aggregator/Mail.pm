@@ -258,9 +258,8 @@ sub get_doc {
     # then skip text/plain
     my @part_types      = map { $_->body->mimeType->type } @parts;
     my $skip_text_plain = 0;
-    if (    scalar @part_types == 2
-        and grep { $_ eq 'text/html' } @part_types
-        and grep { $_ eq 'text/html' } @part_types )
+    if ( scalar @part_types > 1
+        and grep { $_ eq 'text/plain' } @part_types )
     {
         $skip_text_plain = 1;
     }

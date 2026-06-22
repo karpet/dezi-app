@@ -31,7 +31,7 @@ jobs:
           fi
       - name: Install build dependencies
         run: |
-          cpan CPAN::DistnameInfo Dist::Zilla Dist::Zilla::Role::ModuleMetadata
+          cpanm --notest CPAN::DistnameInfo Dist::Zilla Dist::Zilla::Role::ModuleMetadata
           # -f just in case, we want to force using the brew-installed libxml2
           cpan -f Alien::Libxml2
           dzil authordeps --missing | cpanm --notest
